@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EAKN</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #212121;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            height: 100vh;
+            display: flex;
+        }
+        
+        .side-bar {
+            width: 200px;
+            background-color: #1a1d23;
+            padding: 20px;
+        }
+        
+        .left-bar {
+            margin: 0 0 0 0;
+        }
+        
+        .right-bar {
+            margin: 0 0 0 auto;
+        }
+        
+        .middle-containers {
+            display: flex;
+            flex-direction: column;
+            width: calc(100% - 400px);
+            margin: 20px 0;
+        }
+        
+        .middle-container {
+            background-color: #2f343a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 20px;
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="side-bar left-bar">
+            <!-- Left Menu Bar Content -->
+            Left Menu Bar
+        </div>
+        <div class="middle-containers">
+            <div class="middle-container">
+                <!-- Middle Container 1 Content -->
+                Middle Container 1
+            </div>
+            <div class="middle-container">
+                <!-- Middle Container 2 Content -->
+                Middle Container 2
+            </div>
+        </div>
+        <div class="side-bar right-bar">
+            <!-- Right Menu Bar Content -->
+            Right Menu Bar
+        </div>
+    </div>
+</body>
+</html>
