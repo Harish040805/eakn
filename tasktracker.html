@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Tracker</title>
+<link rel="stylesheet" href="tasktrackercss.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="task-tracker">
+    <div id="meter-wrapper" style="display: flex; align-items: center; gap: 10px; align-items: center; justify-content: center; align-content: center;">
+        <p class="mo">REMAINING TIME OF THE DAY</p>
+        <div id="independent-meter-container">
+            <div id="independent-meter"></div>
+        </div>
+    </div>
+</div>
+<div class="controls">
+    <br><br><br>
+        <h1>Task Tracker</h1>
+    <input type="text" id="task-name" placeholder="Task Name">
+    <input type="datetime-local" id="start-date" placeholder="Start Date & Time">
+    <input type="datetime-local" id="end-date" placeholder="End Date & Time">
+    <button id="add-btn">Add</button>
+    <div id="live-clock" style="margin-top:10px; padding:8px; background:#00740c7f; border-radius:10px; text-align:center; color:white;">
+        <div id="time-24" style="font-weight:bold;"></div>
+        <div id="date-ddmmyyyy"></div>
+        <div id="date-month-dd-yyyy"></div>
+    </div>
+<div id="beep-controller">
+  <button id="btn-io">On/Off<br>(OFF)</button>
+  <button id="btn-a">Progress</button>
+  <button id="btn-b">Lagging</button>
+</div>
+    <button style="color: #000; background: #fff;">Turn on timer beep from the below buttons for tasks that are on</button>
+<div id="intent-layer" style="padding:10px;border:1px solid #ccc;margin-bottom:10px;">
+    <label><strong>Today’s Intent</strong></label><br>
+    <textarea id="dailyIntent" placeholder="e.g. Automata exam preparation"
+           style="width:95%;padding:6px; resize: vertical;"></textarea>
+    <div id="intentStatus" style="margin-top:6px;font-size:14px;">
+        🧭 Intent Alignment: Not calculated
+    </div>
+</div>
+<script>
+const intentInput = document.getElementById("dailyIntent");
+const intentStatus = document.getElementById("intentStatus");
+
+intentInput.value = localStorage.getItem("daily_intent") || "";
+
+intentInput.addEventListener("input", () => {
+    localStorage.setItem("daily_intent", intentInput.value);
+    computeIntentAlignment();
+});
+
+function computeIntentAlignment() {
+    const intent = intentInput.value.toLowerCase().trim();
+    if (!intent) {
+        intentStatus.textContent = "🧭 Intent Alignment: No intent set";
+        return;
+    }
+
+    const intentWords = intent.split(/\s+/).filter(w => w.length > 3);
+
+    const taskNameSpans = document.querySelectorAll(".task span:first-child");
+    if (taskNameSpans.length === 0) {
+        intentStatus.textContent = "🧭 Intent Alignment: No tasks yet";
+        return;
+    }
+
+    let score = 0;
+    let matchedTasks = 0;
+
+    taskNameSpans.forEach(span => {
+        const text = span.textContent.toLowerCase();
+        const match = intentWords.some(word => text.includes(word));
+        if (match) matchedTasks++;
+    });
+
+    score = Math.round((matchedTasks / taskNameSpans.length) * 100);
+
+    if (score >= 70) {
+        intentStatus.textContent = `🧭 Intent Alignment: ${score}% (Stable)`;
+    } else if (score >= 40) {
+        intentStatus.textContent = `⚠️ Intent Alignment: ${score}% (Weak)`;
+    } else {
+        intentStatus.textContent = `🚨 Intent Drift Detected (${score}%)`;
+    }
+}
+
+// passive recalculation
+setInterval(computeIntentAlignment, 60000);
+
+</script>
+</div>
+<br><br><br>
+        <input type="text" class="searcho">
+        <button type="submit" class="searcha"><i class="fa fa-search"></i></button>
+        <br><br><br><br>
+<div class="tasks" id="tasks"></div>
+<script src="tasktrackerjs.js"></script>
+</body>
+</html>

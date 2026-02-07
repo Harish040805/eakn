@@ -1,0 +1,35 @@
+body { background: url('C:/Users/HP/OneDrive/Desktop/tasktracker/giphy.gif'); background-repeat: no-repeat; background-attachment: scroll; background-size: cover; font-family: sans-serif; color: white; margin: 0; padding: 0; }
+.task-tracker { background-color: #ffffff00; padding: 20px; width: 100%; height: auto; position: fixed; top: 0; left: 0; z-index: 1000; }
+.task-tracker h1 { color: #ffffff; text-align: center; }
+.controls { display: flex; flex-direction: column; width: 17%; height: 100vh; background-color: #ffffff00; float: left; padding: 15px; }
+.controls input { margin: 5px; padding: 5px; border: none; }
+.controls button { margin: 5px; padding: 5px; border: none; color: #fff; background-color: #00ca00; cursor: pointer; }
+.controls button:hover { background-color: rgb(0, 173, 0); }
+.tasks { width: 81%; float: left; }
+.task { background-color: #2b7836; padding: 10px; margin: 5px; display: flex; align-items: center; }
+.task span { display: inline-block; margin-right: 10px; width: 200px; }
+.task button { font-size: 12px; padding: 5px 7px; margin-left: 5px; background-color: rgb(0, 202, 0); color: white; border: none; cursor: pointer; }
+.task button:hover { background-color: rgb(0, 173, 0); }
+.progress-container { background-color: #9c9c9c; width: 28%; height: 10px; margin-right: 10px; overflow: hidden; }
+.progress-bar { height: 10px; width: 0%; transition: width 0.5s linear, background-color 0.5s linear; }
+.controls button#add-btn { color: white; background-color: #00ca00; cursor: pointer; }
+.controls button#add-btn:hover { background-color: rgb(0, 173, 0); }
+.task button.edit-btn { background-color: blue; color: white; cursor: pointer; }
+.task button.edit-btn:hover { background-color: darkblue; }
+.task button.delete-btn { background-color: red; color: white; cursor: pointer; }
+.task button.delete-btn:hover { background-color: darkred; }
+#independent-meter-container { width: 80%; background-color: #222; border-radius: 5px; overflow: hidden; height: 12px; }
+#independent-meter { height: 100%; width: 0%; background-color: #00aaff; transition: width 1s linear; }
+#beep-controller { display: flex; justify-content: space-evenly; margin-top: 50px; gap: 2px; z-index: 9999; }
+#beep-controller button { padding: 5px 13px; border: none; cursor: pointer; font-weight: bold; transition: background 0.3s, color 0.3s; }
+#btn-io.on { background-color: #007600; color: white; }
+#btn-io.off { background-color: #00ca00; color: white; }
+#btn-a, #btn-b { background-color: #eee; color: #000; border: 1px solid #444; }
+#btn-a.active, #btn-b.active { background-color: #444; color: #fff; }
+#task-name, #start-date, #end-date{ background-color: #cce7c7; }
+.mo{ margin: 0; }
+.searcho{ width: 75%; height: 30px; border-radius: 5px; }
+.searcha{ border-radius: 50px; color: #fff; background-color: #00ff00a2; padding: 10px; margin: 10px; border: none; }
+.searcha:hover{ border-radius: 50px; color: #fff; background-color: #00e200a2; padding: 10px; margin: 10px; border: none; }
+#repeat-daily-toggle { cursor: pointer; transition: background 0.3s; }
+.daily-repeat-btn { padding: 6px 10px; border: none; color: #000; border-radius: 6px; margin-left: 5px; cursor: pointer; }
