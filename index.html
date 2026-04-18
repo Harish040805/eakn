@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Emotion Aware Knowledge Navigator | Welcome</title>
+    <!-- Absolute Local Path for CSS -->
+    <link rel="stylesheet" href="D:\eakntesting\style.css">
+    <link rel="shortcut icon" href="https://github.com/Harish040805/eakn/blob/main/eaknlogo.png?raw=true" type="image/x-icon">
+</head>
+<body>
+<div class="welcome-box">
+    <div class="header-row">
+        <img src="https://github.com/Harish040805/eakn/blob/main/eaknlogo.png?raw=true" class="logo-circle">
+        <!-- Absolute Local Path for Help page -->
+        <a href="D:\eaknnewproject\about.html" class="top-button">Help?</a>
+    </div>
+    <div class="title">Emotion Aware Knowledge Navigator</div>
+    <div class="subtitle">Welcome to your intelligent emotional learning assistant platform.</div>    
+    <div class="slider-container" onclick="enterApp()">
+        <div class="slider-track">
+            <div class="slider-thumb" id="welcomeThumb">▶</div>
+            <span class="slider-text" id="welcomeText">Slide to Enter →</span>
+        </div>
+    </div>
+</div>
+
+<script>
+function enterApp(){
+    const thumb = document.getElementById("welcomeThumb");
+    const text = document.getElementById("welcomeText");
+    const container = document.querySelector(".slider-container");
+
+    const maxMove = container.offsetWidth - thumb.offsetWidth - 10;
+
+    // Smooth animation using transform
+    thumb.style.transition = "transform 0.5s ease";
+    thumb.style.transform = `translateX(${maxMove}px)`;
+    text.style.opacity = "0";
+
+    setTimeout(() => {
+        text.innerText = "Loading...";
+        text.style.opacity = "1";
+    }, 300);
+
+    setTimeout(() => {
+        text.innerText = "Welcome!";
+    }, 800);
+
+    // Absolute Local Path for redirect
+    setTimeout(() => {
+        window.location.href = "D:\\eaknnewproject\\signinup.html";
+    }, 1500);
+}
+</script>
+</body>
+</html>
