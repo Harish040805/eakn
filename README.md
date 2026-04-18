@@ -12,3 +12,7 @@ Task Tracker when tasks added, it saves in DB, but not strongly, when a task is 
 The entire site is working sometimes and not working sometimes
 
 Goal: The site should detect emotion whether the user is "Happy", "Sad", "Angry", "Valour", "Shy", "Disgust", "Love", "Neutral", "Fear", "Wonder", "Peace".  The tasks whatever the user adds must be strongly stored in Mongo DB. The AI should detect the tasks added in the task tracker with start date and end date. The AI get the emotion as the input and generate content to solve those tasks. Let's see file repo later. But, solve all the other problems.
+
+
+
+Plus: The response format of Ai should also be changed. It is giving like paragraphs. They are too long.
