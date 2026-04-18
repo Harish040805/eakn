@@ -7,6 +7,7 @@ Issues:
 Debug the Project 
 
 File Repo
+
 Task Tracker when tasks added, it saves in DB, but not strongly, when a task is renamed dynamically, it is not updated in DB 
 
 The entire site is working sometimes and not working sometimes
