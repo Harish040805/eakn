@@ -8,7 +8,8 @@
     <meta http-equiv="Expires" content="0" />
     <title>Emotion Aware Knowledge Navigator | Main</title>
     <link rel="shortcut icon" href="https://github.com/Harish040805/eakn/blob/main/eaknlogo.png?raw=true" type="image/x-icon">
-    <link rel="stylesheet" href="eakn.css">
+    <link rel="stylesheet" href="D:\eakntesting\eakn.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div id="splash-screen">
@@ -88,7 +89,7 @@
                     <p><i>System: AI is ready.</i></p>
                 </div>
                 <div style="padding: 10px; display: flex; flex-direction: column; gap: 10px;">
-                    <textarea id="user-input" placeholder="Talk to EAKN AI..." style="width: 90%; height: 80px; padding: 8px; border-radius: 5px; resize: none; background: #1a1d23; color: white; border: 1px solid #2b7cff;"></textarea>
+                    <textarea id="user-input" placeholder="🤖 Talk to EAKN AI..." style="width: 90%; height: 80px; padding: 8px; border-radius: 5px; resize: none; background: #1a1d23; color: white; border: 1px solid #2b7cff;"></textarea>
                     <button id="send-btn">📨 Send</button>
                     <button id="clear-chat-btn">🗑️ Clear Chat History</button>
                 </div>
@@ -101,171 +102,109 @@
                 <div id="dateFormat2"></div>&nbsp;<div style="font-size:32px; margin-bottom:5px;">🕰️</div>&nbsp;<div id="timeFormat"></div>
             </div>
         </div>
-<!-- Floating Button -->
-<div id="repoFloatingBtn" style="
-position:fixed;
-bottom:30px;
-right:30px;
-background:#3b83ff;
-color:#fff;
-padding:14px;
-border-radius:50%;
-cursor:pointer;
-font-size:20px;
-box-shadow:0 0 15px rgba(0,0,0,.5);
-transition:.3s;
-z-index:999;"
-onmouseover="this.style.background='#1b67a5'"
-onmouseout="this.style.background='#3b83ff'">
-📁
-</div>
-
-<!-- Modal -->
-<div id="repoModal" style="
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.6);
-display:none;
-justify-content:center;
-align-items:center;
-z-index:1000;">
-
-    <div style="
-    width:85vw;
-    height:85vh;
-    background:#2b2b2b;
-    border-radius:16px;
-    padding:15px;
-    display:flex;
-    flex-direction:column;">
-
-        <!-- Header -->
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-            <h3 style="color:#fff;">📁 File Repository</h3>
-            <button onclick="closeRepo()" style="
-            background:#3b83ff;
-            color:#fff;
-            border:none;
-            border-radius:6px;
-            padding:6px 12px;
-            cursor:pointer;">✕</button>
-        </div>
-
-        <br>
-
-        <!-- Upload Button -->
-        <div style="margin-bottom:10px;">
-            <button onclick="document.getElementById('fileInput').click()" style="
-            background:#3b83ff;
-            color:#fff;
-            border:none;
-            border-radius:8px;
-            padding:10px 14px;
-            font-size:16px;
-            cursor:pointer;">
-            ➕ Upload Files
-            </button>
-
-            <input type="file" id="fileInput" multiple
-            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.webp,.csv,.json"
-            style="display:none;">
-        </div>
-
-        <!-- File Grid -->
-        <div id="repoList" style="
-        flex:1;
-        overflow:auto;
-        display:grid;
-        grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
-        gap:12px;">
-        </div>
-
+<div id="user-display-card" class="user-identity-box">
+    <div class="user-text">
+        👤<span id="logged-user-name"></span>
+        <span id="logged-user-email"></span>
     </div>
+    <button onclick="logout()" class="signout-minimal-btn">Sign Out</button>
+</div>
+<div id="repoFloatingBtn" style="position:fixed; bottom:30px; right:30px; background:#3b83ff; color:#fff; padding:14px; border-radius:50%; cursor:pointer; 
+font-size:20px; box-shadow:0 0 15px rgba(0,0,0,.5); transition:.3s; z-index:999;" onmouseover="this.style.background='#1b67a5'"
+onmouseout="this.style.background='#3b83ff'"> 📁 </div>
+<div id="repoModal" style="position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; justify-content:center; align-items:center; z-index:1000;">
+<div style="width:85vw; height:85vh; background:#2b2b2b; border-radius:16px; padding:15px; display:flex; flex-direction:column;">
+<div style="display:flex;justify-content:space-between;align-items:center;">
+    <h3 style="color:#fff;">📁 File Repository</h3>
+    <button onclick="closeRepo()" style="background:#3b83ff; color:#fff; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">✕</button>
+</div>
+    <br>
+<div style="margin-bottom:10px;">
+    <button onclick="document.getElementById('fileInput').click()" style="background:#3b83ff; color:#fff; border:none; border-radius:8px; padding:10px 14px;
+    font-size:16px; cursor:pointer;"> ➕ Upload Files
+    </button>
+    <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.webp,.csv,.json" style="display:none;">
+</div>
+<div id="repoList" style="flex:1; overflow:auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px;"></div>
+</div>
 </div>
 <script>
-        let emotionHistory = []; 
-        const WINDOW_SIZE = 3; 
-        let currentStableMood = "NEUTRAL";
-        let eaknVoice = null;
-        let hasSpoken = false;
-        let db;
-        let screenTimeSeconds = localStorage.getItem("screenTimeSeconds") ? parseInt(localStorage.getItem("screenTimeSeconds")) : 0;
-        let emotionFetcher;
-        const pythonFeed = document.getElementById('pythonVideoFeed');
-        const emotionDiv = document.getElementById('emotionDisplay');
-        const request = indexedDB.open("TaskTrackerDB", 2); 
-        request.onupgradeneeded = (e) => {
-            db = e.target.result;
-            if (!db.objectStoreNames.contains("tasks")) {
-                db.createObjectStore("tasks", { keyPath: "id", autoIncrement: true });
-            }
-            if (!db.objectStoreNames.contains("chat_history")) {
-                db.createObjectStore("chat_history", { keyPath: "id", autoIncrement: true });
-            }
-        };
-        request.onsuccess = (e) => {
-            db = e.target.result;
-            displayTasks();
-            loadChatHistory();
-        };
-
-        async function loadVoice() {
-            return new Promise(resolve => {
-                let v = speechSynthesis.getVoices();
-                if (v.length !== 0) resolve(v.find(v => v.name.includes("Male")) || v[0]);
-                else {
-                    speechSynthesis.onvoiceschanged = () => {
-                        v = speechSynthesis.getVoices();
-                        resolve(v.find(v => v.name.includes("Male")) || v[0]);
-                    };
-                }
-            });
+    let emotionHistory = []; 
+    const WINDOW_SIZE = 3; 
+    let currentStableMood = "NEUTRAL";
+    let eaknVoice = null;
+    let hasSpoken = false;
+    let db;
+    let screenTimeSeconds = localStorage.getItem("screenTimeSeconds") ? parseInt(localStorage.getItem("screenTimeSeconds")) : 0;
+    let emotionFetcher;
+    const pythonFeed = document.getElementById('pythonVideoFeed');
+    const emotionDiv = document.getElementById('emotionDisplay');
+    const request = indexedDB.open("TaskTrackerDB", 2); 
+    request.onupgradeneeded = (e) => {
+        db = e.target.result;
+        if (!db.objectStoreNames.contains("tasks")) {
+            db.createObjectStore("tasks", { keyPath: "id", autoIncrement: true });
         }
-
-        async function triggerSpeech() {
-            if (hasSpoken) return;
-            eaknVoice = await loadVoice();
-            const u = new SpeechSynthesisUtterance('Welcome to E A K N, Emotion Aware Knowledge Navigator and Productivity Tool!');
-            u.voice = eaknVoice;
-            u.pitch = 1.1;
-            u.rate = 0.9;
-            window.speechSynthesis.speak(u);
-            hasSpoken = true;
-            ['mousemove', 'keydown', 'touchstart', 'mousedown'].forEach(evt => document.removeEventListener(evt, triggerSpeech));
+        if (!db.objectStoreNames.contains("chat_history")) {
+            db.createObjectStore("chat_history", { keyPath: "id", autoIncrement: true });
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const splashScreen = document.getElementById('splash-screen');
-            const mainContent = document.getElementById('main-content');
-            setTimeout(() => {
-                splashScreen.style.display = 'none';
-                mainContent.style.display = 'block';
-                document.body.style.overflow = 'auto';
-                ['mousemove', 'mouseenter', 'keydown', 'touchstart', 'mousedown'].forEach(evt => document.addEventListener(evt, triggerSpeech, { once: true }));
-            }, 3000);
-            initBlob();
-        });
-
-async function addTask() {
-    const taskInput = document.getElementById("taskInput");
-    const startTime = document.getElementById("startTime");
-    const endTime = document.getElementById("endTime");
-    
-    const taskData = {
-        title: taskInput.value,
-        start: startTime.value,
-        end: endTime.value,
-        status: "pending"
     };
-
-    if (!taskData.title || !taskData.start || !taskData.end) return;
+    request.onsuccess = (e) => {
+        db = e.target.result;
+        displayTasks();
+        loadChatHistory();
+    };
+    async function loadVoice() {
+        return new Promise(resolve => {
+            let v = speechSynthesis.getVoices();
+            if (v.length !== 0) resolve(v.find(v => v.name.includes("Male")) || v[0]);
+            else {
+                speechSynthesis.onvoiceschanged = () => {
+                    v = speechSynthesis.getVoices();
+                    resolve(v.find(v => v.name.includes("Male")) || v[0]);
+                };
+            }
+        });
+    }
+    async function triggerSpeech() {
+        if (hasSpoken) return;
+        eaknVoice = await loadVoice();
+        const u = new SpeechSynthesisUtterance('Welcome to E A K N, Emotion Aware Knowledge Navigator and Productivity Tool!');
+        u.voice = eaknVoice;
+        u.pitch = 1.1;
+        u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+        hasSpoken = true;
+        ['mousemove', 'keydown', 'touchstart', 'mousedown'].forEach(evt => document.removeEventListener(evt, triggerSpeech));
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const splashScreen = document.getElementById('splash-screen');
+        const mainContent = document.getElementById('main-content');
+        setTimeout(() => {
+            splashScreen.style.display = 'none';
+            mainContent.style.display = 'block';
+            document.body.style.overflow = 'auto';
+            ['mousemove', 'mouseenter', 'keydown', 'touchstart', 'mousedown'].forEach(evt => document.addEventListener(evt, triggerSpeech, { once: true }));
+        }, 3000);
+        initBlob();
+    });
+    async function addTask() {
+        const taskInput = document.getElementById("taskInput");
+        const startTime = document.getElementById("startTime");
+        const endTime = document.getElementById("endTime");
+        const taskData = {
+            title: taskInput.value,
+            start: startTime.value,
+            end: endTime.value,
+            status: "pending"
+        };
+        if (!taskData.title || !taskData.start || !taskData.end) return;
 
     await fetch('http://127.0.0.1:5000/add_task', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(taskData)
     });
-
     taskInput.value = "";
     displayTasks();
 }
@@ -273,11 +212,9 @@ async function addTask() {
 async function displayTasks() {
     const container = document.getElementById("taskDisplay");
     if (!container) return;
-
     try {
         const response = await fetch('http://127.0.0.1:5000/get_tasks');
         const tasks = await response.json();
-        
         container.innerHTML = "";
         tasks.forEach(data => {
             const card = document.createElement("div");
@@ -300,18 +237,14 @@ card.innerHTML = `
 
 async function deleteTask(id) {
     if (!confirm("Are you sure you want to delete this task?")) return;
-
     try {
         const response = await fetch(`http://127.0.0.1:5000/delete_task/${id}`, { 
             method: 'DELETE' 
         });
-
         if (response.ok) {
             const tx = db.transaction(["tasks"], "readwrite");
             const store = tx.objectStore("tasks");
-            
             store.delete(isNaN(id) ? id : Number(id));  
-
             tx.oncomplete = () => {
                 const card = document.querySelector(`.task-card[data-id="${id}"]`);
                 if (card) card.remove();
@@ -325,52 +258,61 @@ async function deleteTask(id) {
 }
 
 function autoUpdate(id) {
+    const taskElement = document.getElementById(`task-title-${id}`);
+    const startElement = document.getElementById(`task-start-${id}`);
+    const endElement = document.getElementById(`task-end-${id}`);
+    if (!taskElement) return;
     const updated = {
-        title: document.getElementById(`task-${id}`).value,
-        start: document.getElementById(`start-${id}`).value,
-        end: document.getElementById(`end-${id}`).value
+        title: taskElement.innerText.trim(),
+        start: startElement ? startElement.value : "",
+        end: endElement ? endElement.value : ""
     };
     const tx = db.transaction(["tasks"], "readwrite");
-    tx.objectStore("tasks").put({ id: id, ...updated });
+    const store = tx.objectStore("tasks");
+    const getRequest = store.get(id);
+    getRequest.onsuccess = () => {
+        const data = getRequest.result || { id: id };
+        store.put({ ...data, ...updated });
+    };
     updateOverdueStatus();
     fetch(`http://127.0.0.1:5000/update_task/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updated)
-    });
+    })
+    .then(res => res.json())
+    .then(data => console.log("MongoDB Sync:", data))
+    .catch(err => console.error("Sync Error:", err));
 }
 
-        function updateClock() {
-            const now = new Date();
-            document.getElementById("dateFormat1").innerText = now.toLocaleString('default', { month: 'long', day: '2-digit', year: 'numeric' });
-            document.getElementById("dateFormat2").innerText = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-            document.getElementById("timeFormat").innerText = now.toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit', fractionalSecondDigits: 2 });
-        }
-
-        function updateOverdueStatus() {
-            document.querySelectorAll(".task-card").forEach(card => {
-                const id = card.getAttribute("data-id");
-                const start = new Date(document.getElementById(`start-${id}`).value);
-                const end = new Date(document.getElementById(`end-${id}`).value);
-                const now = new Date();
-                if (isNaN(start) || isNaN(end)) return;
-                let progress = Math.min(Math.max((now - start) / (end - start), 0), 1);
-                card.style.background = `linear-gradient(to right, rgb(${Math.floor(255 * progress)}, ${Math.floor(255 * (1 - progress))}, 0) ${progress * 100}%, #1a1d23 ${progress * 100}%)`;
-                now > end ? card.classList.add("overdue") : card.classList.remove("overdue");
-            });
-        }
-
-        function updateMeter() {
-            const now = new Date();
-            const hours = now.getHours();
-            const percent = ((hours * 3600 + now.getMinutes() * 60 + now.getSeconds()) / 86400) * 100;
-            const meter = document.getElementById('independent-meter');
-            meter.style.width = percent + '%';
-            const colors = { 0: '#FFFFFF', 5: '#FF6200', 6: '#84d6ff', 8: '#DBFFFF', 12: '#FFFF00', 15: '#a4e8d4', 16: '#73FF00', 17: '#AFBDE3', 18: '#71A871', 19: '#00008B', 22: '#FFFFFF' };
-            const activeHour = Object.keys(colors).reverse().find(h => hours >= h);
-            meter.style.backgroundColor = colors[activeHour];
-        }
-
+function updateClock() {
+    const now = new Date();
+    document.getElementById("dateFormat1").innerText = now.toLocaleString('default', { month: 'long', day: '2-digit', year: 'numeric' });
+    document.getElementById("dateFormat2").innerText = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+    document.getElementById("timeFormat").innerText = now.toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit', fractionalSecondDigits: 2 });
+}
+function updateOverdueStatus() {
+    document.querySelectorAll(".task-card").forEach(card => {
+    const id = card.getAttribute("data-id");
+    const start = new Date(document.getElementById(`start-${id}`).value);
+    const end = new Date(document.getElementById(`end-${id}`).value);
+    const now = new Date();
+        if (isNaN(start) || isNaN(end)) return;
+        let progress = Math.min(Math.max((now - start) / (end - start), 0), 1);
+        card.style.background = `linear-gradient(to right, rgb(${Math.floor(255 * progress)}, ${Math.floor(255 * (1 - progress))}, 0) ${progress * 100}%, #1a1d23 ${progress * 100}%)`;
+        now > end ? card.classList.add("overdue") : card.classList.remove("overdue");
+    });
+}
+function updateMeter() {
+    const now = new Date();
+    const hours = now.getHours();
+    const percent = ((hours * 3600 + now.getMinutes() * 60 + now.getSeconds()) / 86400) * 100;
+    const meter = document.getElementById('independent-meter');
+    meter.style.width = percent + '%';
+    const colors = { 0: '#FFFFFF', 5: '#FF6200', 6: '#84d6ff', 8: '#DBFFFF', 12: '#FFFF00', 15: '#a4e8d4', 16: '#73FF00', 17: '#AFBDE3', 18: '#71A871', 19: '#00008B', 22: '#FFFFFF' };
+    const activeHour = Object.keys(colors).reverse().find(h => hours >= h);
+    meter.style.backgroundColor = colors[activeHour];
+}
 async function toggleCamera() {
     const btn = document.getElementById('cameraToggleButton');
     if (pythonFeed.style.display === 'block') {
@@ -393,24 +335,21 @@ async function toggleCamera() {
     }
 }
 
-        function handleSpeech(btn, fn) {
-            const utterance = new SpeechSynthesisUtterance(btn.getAttribute('data-text'));
-            const emoji = btn.querySelector('span');
-            utterance.onstart = () => { if (emoji) emoji.innerText = '🔊'; };
-            utterance.onend = () => { if (emoji) emoji.innerText = '🔇'; };
-            speechSynthesis.speak(utterance);
-            if (fn) fn();
-        }
+function handleSpeech(btn, fn) {
+    const utterance = new SpeechSynthesisUtterance(btn.getAttribute('data-text'));
+    const emoji = btn.querySelector('span');
+    utterance.onstart = () => { if (emoji) emoji.innerText = '🔊'; };
+    utterance.onend = () => { if (emoji) emoji.innerText = '🔇'; };
+    speechSynthesis.speak(utterance);
+    if (fn) fn();
+}
 
 async function sendToAI() {
     const inputField = document.getElementById('user-input');
     const userInput = inputField.value;
     if (!userInput) return;
-
     saveMessage("You", userInput);
-
     const contextualMessage = `[Current User Mood: ${currentStableMood}] ${userInput}`;
-
     const payload = {
         message: contextualMessage, 
         emotion: currentStableMood
@@ -422,13 +361,12 @@ async function sendToAI() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-
         const data = await response.json();
         const chatBox = document.getElementById('chat-display');
-        
         saveMessage("AI", data.reply);
-
-        chatBox.innerHTML += `<p><b>You:</b> ${userInput}</p><p><b>AI:</b> ${data.reply}</p>`;
+        const formattedReply = marked.parse(data.reply);
+        chatBox.innerHTML += `<p><b>You:</b> ${userInput}</p>
+                              <div class="ai-reply-container"><b>AI:</b> ${formattedReply}</div>`;
         chatBox.scrollTop = chatBox.scrollHeight;
         inputField.value = "";
         const voice = await loadVoice();
@@ -453,45 +391,39 @@ function loadChatHistory() {
     const tx = db.transaction(["chat_history"], "readonly");
     const store = tx.objectStore("chat_history");
     const req = store.getAll();
-
     req.onsuccess = (e) => {
         const history = e.target.result;
         if (history.length > 0) {
             chatBox.innerHTML = ""; 
             history.forEach(msg => {
-                chatBox.innerHTML += `<p><b>${msg.sender}:</b> ${msg.text}</p>`;
+                const content = msg.sender === "AI" ? marked.parse(msg.text) : msg.text;
+                chatBox.innerHTML += `<p><b>${msg.sender}:</b> ${content}</p>`;
             });
             chatBox.scrollTop = chatBox.scrollHeight;
         }
     };
 }
-
 document.getElementById('clear-chat-btn').addEventListener('click', clearChatHistory);
 
 function clearChatHistory() {
     const firstCheck = confirm("Do you want to clear the chat with AI?");
-    
     if (firstCheck) {
         const verificationCode = Math.floor(1000 + Math.random() * 9000);
         const userInput = prompt(`To confirm deletion, please enter the following numbers: ${verificationCode}`);
-        
         if (userInput === verificationCode.toString()) {
             const tx = db.transaction(["chat_history"], "readwrite");
             const store = tx.objectStore("chat_history");
             const request = store.clear();
-
 request.onsuccess = async () => {
     try {
         await fetch('http://127.0.0.1:5000/clear_chat', { method: 'POST' });
     } catch (e) {
         console.error("Backend chat clear failed");
     }
-
     const chatBox = document.getElementById('chat-display');
     chatBox.innerHTML = `<p><i>System: Chat history deleted successfully.</i></p>`;
     alert("Chat has been completely deleted.");
-};
-            
+};       
             request.onerror = (e) => {
                 console.error("Database Error:", e.target.error);
             };
@@ -518,54 +450,53 @@ async function syncTaskWithDB(taskId, updatedFields) {
     }
 }
 
-
-        function initBlob() {
-            const canvas = document.querySelector(".eakn-random-blob");
-            const ctx = canvas.getContext("2d");
-            canvas.width = 400; canvas.height = 130;
-            let scale = 1, pts = [], color, dragging = false;
-            const points = 20, baseRadius = 45, variation = 15;
-            document.querySelector(".zoom-in").onclick = () => { if (scale < 1.8) canvas.style.transform = `scale(${scale += 0.1})`; };
-            document.querySelector(".zoom-out").onclick = () => { if (scale > 0.5) canvas.style.transform = `scale(${scale -= 0.1})`; };
-            function createBlob() {
-                pts = [];
-                for (let i = 0; i < points; i++) {
-                    let angle = i * (Math.PI * 2 / points);
-                    let r = baseRadius + (Math.random() * variation);
-                    let x = 200 + Math.cos(angle) * r, y = 65 + Math.sin(angle) * r;
-                    pts.push({ x, y, ox: x, oy: y, vx: 0, vy: 0 });
-                }
-                color = { r: Math.floor(Math.random() * 200) + 30, g: Math.floor(Math.random() * 200) + 30, b: Math.floor(Math.random() * 200) + 30 };
-            }
-            function draw() {
-                ctx.clearRect(0, 0, 400, 130);
-                ctx.beginPath();
-                for (let i = 0; i < points; i++) {
-                    let p0 = pts[i], p1 = pts[(i + 1) % points], mx = (p0.x + p1.x) / 2, my = (p0.y + p1.y) / 2;
-                    if (i === 0) ctx.moveTo(mx, my);
-                    ctx.quadraticCurveTo(p0.x, p0.y, mx, my);
-                }
-                ctx.closePath();
-                let g = ctx.createRadialGradient(200, 65, 5, 200, 65, 60);
-                g.addColorStop(0, `rgb(${color.r + 60},${color.g + 60},${color.b + 60})`);
-                g.addColorStop(1, `rgb(${color.r},${color.g},${color.b})`);
-                ctx.fillStyle = g; 
-                ctx.fill();
-                pts.forEach(p => { p.x += (p.ox - p.x) * 0.02; p.y += (p.oy - p.y) * 0.02; });
-                requestAnimationFrame(draw);
-            }
-            canvas.onmousedown = () => dragging = true;
-            window.onmouseup = () => dragging = false;
-            canvas.onmousemove = (e) => {
-                if (!dragging) return;
-                const rect = canvas.getBoundingClientRect();
-                pts.forEach(p => {
-                    let dx = (e.clientX - rect.left) - p.x, dy = (e.clientY - rect.top) - p.y;
-                    if (Math.sqrt(dx * dx + dy * dy) < 120) { p.x += dx * 0.15; p.y += dy * 0.15; }
-                });
-            };
-            createBlob(); draw();
+function initBlob() {
+    const canvas = document.querySelector(".eakn-random-blob");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 400; canvas.height = 130;
+    let scale = 1, pts = [], color, dragging = false;
+    const points = 20, baseRadius = 45, variation = 15;
+    document.querySelector(".zoom-in").onclick = () => { if (scale < 1.8) canvas.style.transform = `scale(${scale += 0.1})`; };
+    document.querySelector(".zoom-out").onclick = () => { if (scale > 0.5) canvas.style.transform = `scale(${scale -= 0.1})`; };
+    function createBlob() {
+        pts = [];
+        for (let i = 0; i < points; i++) {
+            let angle = i * (Math.PI * 2 / points);
+            let r = baseRadius + (Math.random() * variation);
+            let x = 200 + Math.cos(angle) * r, y = 65 + Math.sin(angle) * r;
+            pts.push({ x, y, ox: x, oy: y, vx: 0, vy: 0 });
         }
+        color = { r: Math.floor(Math.random() * 200) + 30, g: Math.floor(Math.random() * 200) + 30, b: Math.floor(Math.random() * 200) + 30 };
+    }
+function draw() {
+    ctx.clearRect(0, 0, 400, 130);
+    ctx.beginPath();
+    for (let i = 0; i < points; i++) {
+        let p0 = pts[i], p1 = pts[(i + 1) % points], mx = (p0.x + p1.x) / 2, my = (p0.y + p1.y) / 2;
+        if (i === 0) ctx.moveTo(mx, my);
+        ctx.quadraticCurveTo(p0.x, p0.y, mx, my);
+    }
+    ctx.closePath();
+    let g = ctx.createRadialGradient(200, 65, 5, 200, 65, 60);
+    g.addColorStop(0, `rgb(${color.r + 60},${color.g + 60},${color.b + 60})`);
+    g.addColorStop(1, `rgb(${color.r},${color.g},${color.b})`);
+    ctx.fillStyle = g; 
+    ctx.fill();
+    pts.forEach(p => { p.x += (p.ox - p.x) * 0.02; p.y += (p.oy - p.y) * 0.02; });
+    requestAnimationFrame(draw);
+}
+    canvas.onmousedown = () => dragging = true;
+    window.onmouseup = () => dragging = false;
+    canvas.onmousemove = (e) => {
+        if (!dragging) return;
+        const rect = canvas.getBoundingClientRect();
+        pts.forEach(p => {
+            let dx = (e.clientX - rect.left) - p.x, dy = (e.clientY - rect.top) - p.y;
+            if (Math.sqrt(dx * dx + dy * dy) < 120) { p.x += dx * 0.15; p.y += dy * 0.15; }
+        });
+    };
+    createBlob(); draw();
+}
 
         setInterval(updateClock, 50);
         setInterval(displayTasks, 60000);
@@ -618,10 +549,8 @@ async function loadRepoFiles() {
     try {
         const res = await fetch(FILE_API + "/files");
         if (!res.ok) throw new Error("Failed to fetch files");
-
         const files = await res.json();
         const list = document.getElementById("repoList");
-
         list.innerHTML = "";
         list.style.display = "grid";
         list.style.gridTemplateColumns = "repeat(auto-fill,minmax(180px,1fr))";
@@ -643,12 +572,9 @@ async function loadRepoFiles() {
             title.innerText = f.name || "Unnamed File";
             title.style = "font-size:12px;word-break:break-all;color:#fff;";
             card.appendChild(title);
-
             const preview = document.createElement("div");
             preview.style = "height:100px;display:flex;justify-content:center;align-items:center;background:#111;border-radius:8px;overflow:hidden;";
-
             const type = f.contentType || "";
-
             if (type.startsWith("image")) {
                 const img = document.createElement("img");
                 img.src = FILE_API + "/file/" + f._id;
@@ -658,33 +584,25 @@ async function loadRepoFiles() {
                 preview.innerHTML = "📄";
                 preview.style.fontSize = "40px";
             }
-
             card.appendChild(preview);
-
             const actions = document.createElement("div");
             actions.style = "display:flex;gap:6px;";
-
             const uploadBtn = document.createElement("button");
             uploadBtn.innerText = "➕";
             uploadBtn.style = btnStyle();
             uploadBtn.onclick = () => replaceFile(f._id);
-
             const viewBtn = document.createElement("button");
             viewBtn.innerText = "👁️";
             viewBtn.style = btnStyle();
             viewBtn.onclick = () => window.open(FILE_API + "/file/" + f._id, "_blank");
-
             const deleteBtn = document.createElement("button");
             deleteBtn.innerText = "🗑️";
             deleteBtn.style = btnStyle();
             deleteBtn.onclick = () => deleteRepoFile(f._id);
-
             actions.append(uploadBtn, viewBtn, deleteBtn);
             card.appendChild(actions);
-
             list.appendChild(card);
         });
-
     } catch (err) {
         console.error(err);
         alert("⚠️ Failed to load files. Is backend running?");
@@ -706,36 +624,27 @@ function btnStyle() {
 function replaceFile(id) {
     const input = document.createElement("input");
     input.type = "file";
-
     input.onchange = async e => {
         try {
             const file = e.target.files[0];
             if (!file) return;
-
             const formData = new FormData();
             formData.append("file", file);
-
             const uploadRes = await fetch(FILE_API + "/upload", {
                 method: "POST",
                 body: formData
             });
-
             if (!uploadRes.ok) throw new Error("Upload failed");
-
             const deleteRes = await fetch(FILE_API + "/delete/" + id, {
                 method: "DELETE"
             });
-
             if (!deleteRes.ok) throw new Error("Delete failed");
-
             loadRepoFiles();
-
         } catch (err) {
             console.error(err);
             alert("⚠️ Replace failed");
         }
     };
-
     input.click();
 }
 
@@ -751,63 +660,48 @@ document.getElementById("fileInput").addEventListener("change", async e => {
             "text/plain","text/csv","application/json",
             "image/jpeg","image/png","image/webp"
         ];
-
         const allowedExt = [
             ".pdf",".doc",".docx",".ppt",".pptx",".xls",".xlsx",
             ".txt",".csv",".json",".jpg",".jpeg",".png",".webp"
         ];
-
         const files = e.target.files;
         if (!files.length) return;
-
         for (let file of files) {
             const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
-
             if (!allowedTypes.includes(file.type) || !allowedExt.includes(ext)) {
                 alert(`❌ ${file.name} not supported`);
                 continue;
             }
-
             const formData = new FormData();
             formData.append("file", file);
-
             const res = await fetch(FILE_API + "/upload", {
                 method: "POST",
                 body: formData
             });
-
             if (!res.ok) throw new Error("Upload failed");
         }
-
         loadRepoFiles();
-
     } catch (err) {
         console.error(err);
         alert("⚠️ Upload error");
     }
 });
-
 async function viewRepoFile() {
     try {
         const res = await fetch(FILE_API + "/files");
         if (!res.ok) throw new Error("Fetch failed");
-
         const files = await res.json();
         const list = document.getElementById("repoList");
         list.innerHTML = "";
-
         for (let f of files) {
             const container = document.createElement("div");
             container.style = "background:#111;padding:10px;border-radius:8px;";
-
             const title = document.createElement("div");
             title.innerText = f.name;
             title.style = "margin-bottom:8px;color:#3b83ff;font-weight:bold;";
             container.appendChild(title);
-
             const viewer = document.createElement("div");
             const type = f.contentType || "";
-
             if (type.startsWith("image")) {
                 const img = document.createElement("img");
                 img.src = FILE_API + "/file/" + f._id;
@@ -835,32 +729,24 @@ async function viewRepoFile() {
                 link.style = "color:#3b83ff;";
                 viewer.appendChild(link);
             }
-
             container.appendChild(viewer);
             list.appendChild(container);
         }
-
     } catch (err) {
         console.error(err);
     }
 }
-
 async function deleteRepoFile(id) {
     const otp = Math.floor(100000 + Math.random() * 900000);
     alert("Enter OTP: " + otp);
-
     const user = prompt("Enter OTP:");
-
     if (user === String(otp)) {
         try {
             const res = await fetch(FILE_API + "/delete/" + id, {
                 method: "DELETE"
             });
-
             if (!res.ok) throw new Error("Delete failed");
-
             loadRepoFiles();
-
         } catch (err) {
             console.error(err);
             alert("⚠️ Delete failed");
@@ -869,6 +755,23 @@ async function deleteRepoFile(id) {
         alert("Wrong OTP");
     }
 }
+function displayUserInfo() {
+    const name = sessionStorage.getItem("eakn_user_name");
+    const email = sessionStorage.getItem("eakn_user_email");
+    if (name && email) {
+        document.getElementById("logged-user-name").innerText = name;
+        document.getElementById("logged-user-email").innerText = email;
+    } else {
+        window.location.href = "signinup.html";
+    }
+}
+function logout() {
+    sessionStorage.clear();
+    window.location.href = "signinup.html";
+}
+window.onload = () => {
+    displayUserInfo();
+};
 </script>
 </body>
 </html>
